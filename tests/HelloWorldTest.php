@@ -23,7 +23,7 @@ class HelloWorldTest extends TestCase
      *
      * @covers HelloWorld::sayHello
      */
-    public function testSayHelloReturnsHelloWorldAsString()
+    public function testAppOutputsHelloWorld()
     {
         $helloWorld = new HelloWorld();
         $expectedAnswer = $helloWorld->sayHello();
