@@ -2,10 +2,24 @@
 
 namespace App;
 
+/**
+ * Class HelloWorld
+ *
+ * Example code that will say Hello
+ *
+ * @package App
+ */
 class HelloWorld
 {
-    public function sayHello(): string
+    /**
+     * SayHello will return a string containing the given
+     * argument
+     *
+     * @param string $arg
+     * @return string
+     */
+    public function sayHello(string $arg): string
     {
-        return 'Hello World!';
+        return 'Hello ' . $arg . '!';
     }
 }
