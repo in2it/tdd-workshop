@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class HelloWorldTest extends TestCase
 {
     /**
-     * This test will test our HelloWorld class for method
+     * This test will check our HelloWorld class for method
      * sayHello to assert that this method will return the
      * string "Hello World!"
      *
@@ -28,5 +28,20 @@ class HelloWorldTest extends TestCase
         $helloWorld = new HelloWorld();
         $expectedAnswer = $helloWorld->sayHello();
         $this->assertSame('Hello World!', $expectedAnswer);
+    }
+
+    /**
+     * This test will check our HelloWorld class for method
+     * sayHello to assert that this method will return a string
+     * "Hello <arg>!" where <arg> is the argument given to the
+     * sayHello method
+     *
+     * @covers HelloWorld::sayHello
+     */
+    public function testAppOutputsHelloArgument()
+    {
+        $helloWorld = new HelloWorld();
+        $expectedAnswer = $helloWorld->sayHello('unit testers');
+        $this->assertSame('Hello unit testers!', $expectedAnswer);
     }
 }
