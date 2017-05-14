@@ -18,7 +18,7 @@ class HelloWorld
      * @param string $arg
      * @return string
      */
-    public function sayHello(string $arg): string
+    public function sayHello(string $arg = 'World'): string
     {
         return 'Hello ' . $arg . '!';
     }
