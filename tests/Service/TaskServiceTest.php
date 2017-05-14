@@ -37,4 +37,24 @@ class TaskServiceTest extends TestCase
     {
         // Remove task marked as done
     }
+
+    public function testServiceWillThrowRuntimeExceptionWhenStorageFailsToFetchTaskList()
+    {
+        // Throw a runtime exception when connection to storage fails for fetching task list
+    }
+
+    public function testServiceWillThrowInvalidArgumentExceptionWhenInvalidTaskIsAdded()
+    {
+        // Throw an invalid argument exception for invalid task when adding
+    }
+
+    public function testServiceWillThrowRuntimeExceptionWhenStorageFails()
+    {
+        // Throw a runtime exception when storage of task fails
+    }
+
+    public function testServiceWillThrowDomainExceptionWhenTaskWasMarkedAsDoneWhenMarkingTaskAsDone()
+    {
+        // Throw a domain exception when a task was already marked as done
+    }
 }
