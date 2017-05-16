@@ -60,7 +60,7 @@ class TaskServiceTest extends TestCase
         $taskCollection->attach($taskEntry1);
 
         $taskGateway = $this->getMockBuilder(TaskGatewayInterface::class)
-            ->setMethods(['fetchAll', 'add'])
+            ->setMethods(['fetchAll', 'add', 'find'])
             ->getMock();
 
         $taskGateway->expects($this->any())
@@ -73,6 +73,14 @@ class TaskServiceTest extends TestCase
                 $taskCollection->attach($task);
                 return true;
             }));
+
+        $taskGateway->expects($this->any())
+            ->method('find')
+            ->willReturnMap([
+                ['789', $taskEntry3],
+                ['456', $taskEntry2],
+                ['123', $taskEntry1],
+            ]);
 
         $this->taskGateway = $taskGateway;
     }
@@ -106,6 +114,11 @@ class TaskServiceTest extends TestCase
         }
     }
 
+    /**
+     * Add a new task to the storage
+     *
+     * @covers TaskService::addTask
+     */
     public function testServiceCanAddNewTask()
     {
         $taskEntity = $this->getMockBuilder(TaskEntityInterface::class)
@@ -123,6 +136,32 @@ class TaskServiceTest extends TestCase
         $taskService->addTask($taskEntity);
 
         $this->assertCount(4, $taskService->getAllTasks());
+    }
+
+    /**
+     * Throw an exception if a task was not found by given task ID
+     *
+     * @covers TaskService::findTask
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessageRegExp /Cannot find task with ID [a-z0-9]+/
+     */
+    public function testServiceThrowsExceptionIfTaskWasNotFound()
+    {
+        $taskService = new TaskService($this->taskGateway);
+        $taskEntity = $taskService->findTask('999');
+        $this->fail('Expected exception was not triggered, please validate input');
+    }
+
+    /**
+     * Find a task by given task ID
+     *
+     * @covers TaskService::findTask
+     */
+    public function testServiceCanFindTask()
+    {
+        $taskService = new TaskService($this->taskGateway);
+        $taskEntity = $taskService->findTask('123');
+        $this->assertSame('123', $taskEntity->getId());
     }
 
     public function testServiceCanUpdateExistingTask()

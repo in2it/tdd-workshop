@@ -45,4 +45,20 @@ class TaskService
         }
         return $taskEntity;
     }
+
+    /**
+     * Find a task by given task ID
+     *
+     * @param string $taskId
+     * @return TaskEntityInterface
+     * @throws \InvalidArgumentException
+     */
+    public function findTask(string $taskId): TaskEntityInterface
+    {
+        $result = $this->taskGateway->find($taskId);
+        if (null === $result) {
+            throw new \InvalidArgumentException('Cannot find task with ID ' . $taskId);
+        }
+        return $result;
+    }
 }
