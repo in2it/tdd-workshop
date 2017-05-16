@@ -3,6 +3,7 @@
 namespace App\Test\Service;
 
 
+use App\Model\TaskGatewayInterface;
 use App\Service\TaskService;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 class TaskServiceTest extends TestCase
 {
     /**
-     * @var TaskGateway
+     * @var TaskGatewayInterface
      */
     protected $taskGateway;
 
@@ -53,16 +54,16 @@ class TaskServiceTest extends TestCase
         $taskEntry3->method('getModified')->willReturn(new \DateTime('2017-04-23 08:16:53'));
 
         $taskCollection = new \SplObjectStorage();
-        $taskCollection->attach($taskEntry1);
-        $taskCollection->attach($taskEntry2);
         $taskCollection->attach($taskEntry3);
+        $taskCollection->attach($taskEntry2);
+        $taskCollection->attach($taskEntry1);
 
-        $taskGateway = $this->getMockBuilder('App\Model\TaskGateway')
-            ->setMethods(['getAllTasks'])
+        $taskGateway = $this->getMockBuilder(TaskGatewayInterface::class)
+            ->setMethods(['fetchAll'])
             ->getMock();
 
         $taskGateway->expects($this->any())
-            ->method('getAllTasks')
+            ->method('fetchAll')
             ->willReturn($taskCollection);
 
         $this->taskGateway = $taskGateway;

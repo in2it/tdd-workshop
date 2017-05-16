@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Model\TaskGatewayInterface;
 
 class TaskService
 {
