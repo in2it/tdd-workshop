@@ -284,9 +284,36 @@ class TaskServiceTest extends TestCase
         $this->assertCount(2, $taskService->getAllTasks());
     }
 
-    public function testServiceWillThrowInvalidArgumentExceptionWhenInvalidTaskIsAdded()
+    /**
+     * Bad task entity provider
+     *
+     * In this method we're trying to create a list of different types
+     * we can think of that should block adding faulty entities to the
+     * collection.
+     *
+     * @return array
+     */
+    public function badTaskEntityProvider(): array
     {
-        // Throw an invalid argument exception for invalid task when adding
+        return [
+            [new \stdClass()],
+            [['a' => 1, 'b' => 2]],
+            ['foo'],
+            [true],
+        ];
+    }
+
+    /**
+     * Throw a type error for invalid task when adding
+     *
+     * @covers TaskService::addTask
+     * @expectedException \TypeError
+     * @dataProvider badTaskEntityProvider
+     */
+    public function testServiceWillThrowTypeErrorWhenInvalidTaskIsAdded($type)
+    {
+        $taskService = new TaskService($this->taskGateway);
+        $taskService->addTask($type);
     }
 
     public function testServiceWillThrowRuntimeExceptionWhenStorageFails()
