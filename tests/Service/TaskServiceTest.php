@@ -316,8 +316,18 @@ class TaskServiceTest extends TestCase
         $taskService->addTask($type);
     }
 
-    public function testServiceWillThrowDomainExceptionWhenTaskWasMarkedAsDoneWhenMarkingTaskAsDone()
+    /**
+     * Throw a domain exception when a task was already marked as done
+     *
+     * @covers TaskService::MarkTaskDone
+     * @expectedException \DomainException
+     */
+    public function testServiceWillThrowDomainExceptionWhenDoneTaskGetsMarkedDone()
     {
-        // Throw a domain exception when a task was already marked as done
+        $taskService = new TaskService($this->taskGateway);
+        $task = $taskService->findTask('456');
+
+        $result = $taskService->markTaskDone($task);
+        $this->assertFalse($result);
     }
 }

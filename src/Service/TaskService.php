@@ -91,9 +91,13 @@ class TaskService
      *
      * @param TaskEntityInterface $taskEntity
      * @return bool
+     * @throws \DomainException
      */
     public function markTaskDone(TaskEntityInterface $taskEntity): bool
     {
+        if ($taskEntity->isDone()) {
+            throw new \DomainException('This task entity is already marked as "done".');
+        }
         $taskEntity->setDone(true);
         return $this->updateTask($taskEntity);
     }
