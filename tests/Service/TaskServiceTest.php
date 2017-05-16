@@ -316,11 +316,6 @@ class TaskServiceTest extends TestCase
         $taskService->addTask($type);
     }
 
-    public function testServiceWillThrowRuntimeExceptionWhenStorageFails()
-    {
-        // Throw a runtime exception when storage of task fails
-    }
-
     public function testServiceWillThrowDomainExceptionWhenTaskWasMarkedAsDoneWhenMarkingTaskAsDone()
     {
         // Throw a domain exception when a task was already marked as done
