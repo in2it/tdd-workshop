@@ -3,6 +3,7 @@
 namespace App\Test\Service;
 
 
+use App\Model\TaskEntityInterface;
 use App\Model\TaskGatewayInterface;
 use App\Service\TaskService;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +26,7 @@ class TaskServiceTest extends TestCase
         parent::setUp();
 
         // We create a mock object
-        $taskEntity = $this->getMockBuilder('App\Entity\TaskEntity')
+        $taskEntity = $this->getMockBuilder(TaskEntityInterface::class)
             ->setMethods(['getId', 'getLabel', 'getDescription', 'isDone', 'getCreated', 'getModified'])
             ->getMock();
 
