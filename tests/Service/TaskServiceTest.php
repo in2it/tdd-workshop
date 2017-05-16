@@ -269,9 +269,19 @@ class TaskServiceTest extends TestCase
         }
     }
 
+    /**
+     * Remove task marked as done
+     *
+     * @covers TaskService::removeTask
+     */
     public function testServiceCanRemoveTaskMarkedAsDone()
     {
-        // Remove task marked as done
+        $taskService = new TaskService($this->taskGateway);
+        $taskEntity = $taskService->findTask('456');
+
+        $this->assertTrue($taskService->removeTask($taskEntity));
+
+        $this->assertCount(2, $taskService->getAllTasks());
     }
 
     public function testServiceWillThrowRuntimeExceptionWhenStorageFailsToFetchTaskList()
