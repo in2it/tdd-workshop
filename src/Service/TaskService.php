@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Model\TaskEntityInterface;
 use App\Model\TaskGatewayInterface;
 
 class TaskService
@@ -25,9 +26,23 @@ class TaskService
      *
      * @return \Iterator
      */
-    public function getAllTasks()
+    public function getAllTasks(): \Iterator
     {
         return $this->taskGateway->fetchAll();
     }
 
+    /**
+     * Adds a new task to the back-end
+     *
+     * @param TaskEntityInterface $taskEntity
+     * @return TaskEntityInterface
+     * @throws \InvalidArgumentException
+     */
+    public function addTask(TaskEntityInterface $taskEntity): TaskEntityInterface
+    {
+        if (!$this->taskGateway->add($taskEntity)) {
+            throw new \InvalidArgumentException('Wrong task added');
+        }
+        return $taskEntity;
+    }
 }

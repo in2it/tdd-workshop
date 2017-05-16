@@ -60,12 +60,19 @@ class TaskServiceTest extends TestCase
         $taskCollection->attach($taskEntry1);
 
         $taskGateway = $this->getMockBuilder(TaskGatewayInterface::class)
-            ->setMethods(['fetchAll'])
+            ->setMethods(['fetchAll', 'add'])
             ->getMock();
 
         $taskGateway->expects($this->any())
             ->method('fetchAll')
             ->willReturn($taskCollection);
+
+        $taskGateway->expects($this->any())
+            ->method('add')
+            ->will($this->returnCallback(function ($task) use ($taskCollection) {
+                $taskCollection->attach($task);
+                return true;
+            }));
 
         $this->taskGateway = $taskGateway;
     }
@@ -101,7 +108,21 @@ class TaskServiceTest extends TestCase
 
     public function testServiceCanAddNewTask()
     {
-        // Create a new task (label and description)
+        $taskEntity = $this->getMockBuilder(TaskEntityInterface::class)
+            ->setMethods(['getId', 'getLabel', 'getDescription', 'isDone', 'getCreated', 'getModified'])
+            ->getMock();
+
+        $taskEntity->method('getId')->willReturn('147');
+        $taskEntity->method('getLabel')->willReturn('Task #147');
+        $taskEntity->method('getDescription')->willReturn('#147: This is task 147');
+        $taskEntity->method('isDone')->willReturn(false);
+        $taskEntity->method('getCreated')->willReturn(new \DateTime('2017-05-01 07:53:24'));
+        $taskEntity->method('getModified')->willReturn(new \DateTime('2017-05-01 08:16:53'));
+
+        $taskService = new TaskService($this->taskGateway);
+        $taskService->addTask($taskEntity);
+
+        $this->assertCount(4, $taskService->getAllTasks());
     }
 
     public function testServiceCanUpdateExistingTask()
