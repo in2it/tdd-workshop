@@ -85,4 +85,16 @@ class TaskService
         $result = $this->taskGateway->update($taskEntity);
         return $result;
     }
+
+    /**
+     * Mark a task as done by given task entity
+     *
+     * @param TaskEntityInterface $taskEntity
+     * @return bool
+     */
+    public function MarkTaskDone(TaskEntityInterface $taskEntity): bool
+    {
+        $taskEntity->setDone(true);
+        return $this->updateTask($taskEntity);
+    }
 }

@@ -27,7 +27,7 @@ class TaskServiceTest extends TestCase
 
         // We create a mock object
         $taskEntity = $this->getMockBuilder(TaskEntityInterface::class)
-            ->setMethods(['getId', 'getLabel', 'getDescription', 'isDone', 'getCreated', 'getModified', 'setLabel'])
+            ->setMethods(['getId', 'getLabel', 'getDescription', 'isDone', 'getCreated', 'getModified', 'setLabel', 'setDone'])
             ->getMock();
 
         $taskEntry1 = clone $taskEntity;
@@ -61,6 +61,14 @@ class TaskServiceTest extends TestCase
         $taskEntry3->method('isDone')->willReturn(false);
         $taskEntry3->method('getCreated')->willReturn(new \DateTime('2017-04-23 07:53:24'));
         $taskEntry3->method('getModified')->willReturn(new \DateTime('2017-04-23 08:16:53'));
+
+        $taskEntryDone = clone $taskEntity;
+        $taskEntryDone->method('getId')->willReturn('789');
+        $taskEntryDone->method('getLabel')->willReturn('#789');
+        $taskEntryDone->method('getDescription')->willReturn('#789: This is task 789');
+        $taskEntryDone->method('isDone')->willReturn(true);
+        $taskEntryDone->method('getCreated')->willReturn(new \DateTime('2017-04-23 07:53:24'));
+        $taskEntryDone->method('getModified')->willReturn(new \DateTime('now'));
 
         $taskCollection = new \SplObjectStorage();
         $taskCollection->attach($taskEntry3);
@@ -102,9 +110,14 @@ class TaskServiceTest extends TestCase
 
         $taskGateway->expects($this->any())
             ->method('update')
-            ->willReturnCallback(function ($task) use ($taskCollection, $taskEntryUpdate) {
-                $taskCollection->attach($taskEntryUpdate);
+            ->willReturnCallback(function ($task) use ($taskCollection, $taskEntryUpdate, $taskEntryDone) {
                 $taskCollection->detach($task);
+                if ('123' === $task->getId()) {
+                    $taskCollection->attach($taskEntryUpdate);
+                }
+                if ('789' === $task->getId()) {
+                    $taskCollection->attach($taskEntryDone);
+                }
                 return true;
             });
 
@@ -233,9 +246,27 @@ class TaskServiceTest extends TestCase
         }
     }
 
+    /**
+     * Mark task as done in the overview list
+     *
+     * @covers TaskService::MarkTaskDone
+     */
     public function testServiceCanMarkTaskAsDone()
     {
-        // Mark task as done in the overview list
+        $taskService = new TaskService($this->taskGateway);
+        $task = $taskService->findTask('789');
+
+        $this->assertTrue($taskService->MarkTaskDone($task));
+
+        $tasks = $taskService->getAllTasks();
+
+        $tasks->rewind();
+        while ($tasks->valid()) {
+            if ('789' === $tasks->current()->getId()) {
+                $this->assertTrue($tasks->current()->isDone());
+            }
+            $tasks->next();
+        }
     }
 
     public function testServiceCanRemoveTaskMarkedAsDone()
