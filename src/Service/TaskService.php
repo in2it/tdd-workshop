@@ -92,7 +92,7 @@ class TaskService
      * @param TaskEntityInterface $taskEntity
      * @return bool
      */
-    public function MarkTaskDone(TaskEntityInterface $taskEntity): bool
+    public function markTaskDone(TaskEntityInterface $taskEntity): bool
     {
         $taskEntity->setDone(true);
         return $this->updateTask($taskEntity);
