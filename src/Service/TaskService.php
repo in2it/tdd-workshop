@@ -61,4 +61,28 @@ class TaskService
         }
         return $result;
     }
+
+    /**
+     * Remove a task by given task entity
+     *
+     * @param TaskEntityInterface $taskEntity
+     * @return bool
+     */
+    public function removeTask(TaskEntityInterface $taskEntity): bool
+    {
+        $result = $this->taskGateway->remove($taskEntity);
+        return $result;
+    }
+
+    /**
+     * Update a task by given task entity
+     *
+     * @param TaskEntityInterface $taskEntity
+     * @return bool
+     */
+    public function updateTask(TaskEntityInterface $taskEntity): bool
+    {
+        $result = $this->taskGateway->update($taskEntity);
+        return $result;
+    }
 }

@@ -27,4 +27,20 @@ interface TaskGatewayInterface
      * @return TaskEntityInterface|null
      */
     public function find(string $taskId): ?TaskEntityInterface;
+
+    /**
+     * Removes a task by given task entity
+     *
+     * @param TaskEntityInterface $taskEntity
+     * @return bool
+     */
+    public function remove(TaskEntityInterface $taskEntity): bool;
+
+    /**
+     * Updates a task by given task entity
+     *
+     * @param TaskEntityInterface $taskEntity
+     * @return bool
+     */
+    public function update(TaskEntityInterface $taskEntity): bool;
 }

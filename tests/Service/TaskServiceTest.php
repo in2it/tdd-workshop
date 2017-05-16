@@ -27,7 +27,7 @@ class TaskServiceTest extends TestCase
 
         // We create a mock object
         $taskEntity = $this->getMockBuilder(TaskEntityInterface::class)
-            ->setMethods(['getId', 'getLabel', 'getDescription', 'isDone', 'getCreated', 'getModified'])
+            ->setMethods(['getId', 'getLabel', 'getDescription', 'isDone', 'getCreated', 'getModified', 'setLabel'])
             ->getMock();
 
         $taskEntry1 = clone $taskEntity;
@@ -37,6 +37,14 @@ class TaskServiceTest extends TestCase
         $taskEntry1->method('isDone')->willReturn(false);
         $taskEntry1->method('getCreated')->willReturn(new \DateTime('2017-03-21 07:53:24'));
         $taskEntry1->method('getModified')->willReturn(new \DateTime('2017-03-21 08:16:53'));
+
+        $taskEntryUpdate = clone $taskEntity;
+        $taskEntryUpdate->method('getId')->willReturn('123');
+        $taskEntryUpdate->method('getLabel')->willReturn('Task #123: Update from service');
+        $taskEntryUpdate->method('getDescription')->willReturn('#123: This is task 123');
+        $taskEntryUpdate->method('isDone')->willReturn(false);
+        $taskEntryUpdate->method('getCreated')->willReturn(new \DateTime('2017-03-21 07:53:24'));
+        $taskEntryUpdate->method('getModified')->willReturn(new \DateTime('now'));
 
         $taskEntry2 = clone $taskEntity;
         $taskEntry2->method('getId')->willReturn('456');
@@ -60,7 +68,7 @@ class TaskServiceTest extends TestCase
         $taskCollection->attach($taskEntry1);
 
         $taskGateway = $this->getMockBuilder(TaskGatewayInterface::class)
-            ->setMethods(['fetchAll', 'add', 'find'])
+            ->setMethods(['fetchAll', 'add', 'find', 'remove', 'update'])
             ->getMock();
 
         $taskGateway->expects($this->any())
@@ -81,6 +89,24 @@ class TaskServiceTest extends TestCase
                 ['456', $taskEntry2],
                 ['123', $taskEntry1],
             ]);
+
+        $taskCollectionLess = clone $taskCollection;
+        $taskCollectionLess->detach($taskEntry1);
+
+        $taskGateway->expects($this->any())
+            ->method('remove')
+            ->willReturnCallback(function ($task) use ($taskCollection) {
+                $taskCollection->detach($task);
+                return true;
+            });
+
+        $taskGateway->expects($this->any())
+            ->method('update')
+            ->willReturnCallback(function ($task) use ($taskCollection, $taskEntryUpdate) {
+                $taskCollection->attach($taskEntryUpdate);
+                $taskCollection->detach($task);
+                return true;
+            });
 
         $this->taskGateway = $taskGateway;
     }
@@ -164,9 +190,47 @@ class TaskServiceTest extends TestCase
         $this->assertSame('123', $taskEntity->getId());
     }
 
+    /**
+     * Tests that we can remove a task
+     *
+     * @covers TaskService::removeTask
+     * @depends testServiceCanFindTask
+     */
+    public function testServiceCanRemoveTask()
+    {
+        $taskService = new TaskService($this->taskGateway);
+        $taskEntity = $taskService->findTask('123');
+
+        $this->assertTrue($taskService->removeTask($taskEntity));
+        $this->assertCount(2, $taskService->getAllTasks());
+    }
+
+    /**
+     * Update an existing task
+     *
+     * @covers TaskService::updateTask
+     * @depends testServiceCanFindTask
+     */
     public function testServiceCanUpdateExistingTask()
     {
-        // Update an existing task
+        $taskService = new TaskService($this->taskGateway);
+        $taskEntity = $taskService->findTask('123');
+
+        $label = 'Task #123: Update from service';
+        $taskEntity->setLabel($label);
+
+        $this->assertTrue($taskService->updateTask($taskEntity));
+
+        $tasks = $taskService->getAllTasks();
+        $this->assertCount(3, $tasks);
+
+        $tasks->rewind();
+        while ($tasks->valid()) {
+            if ('123' === $tasks->current()->getId()) {
+                $this->assertSame($label, $tasks->current()->getLabel());
+            }
+            $tasks->next();
+        }
     }
 
     public function testServiceCanMarkTaskAsDone()
