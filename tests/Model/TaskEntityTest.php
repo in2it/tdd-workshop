@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test\Entity;
+namespace App\Test\Model;
 
 
 use App\Model\TaskEntity;
