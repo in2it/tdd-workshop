@@ -40,13 +40,46 @@ class TaskEntityTest extends TestCase
      *
      * @return array
      */
-    public function badDataProvider()
+    public function wrongDataProvider()
     {
         return [
             [1234, 'This is a test task', 'This test validates the task entity', false],
             ['2340ee1c-499c-4c31-ac80-0da6f480a2bf', 1234, 'This test validates the task entity', true],
             ['2340ee1c-499c-4c31-ac80-0da6f480a2bf', 'This is a test task', 1234, false],
             ['2340ee1c-499c-4c31-ac80-0da6f480a2bf', 'This is a test task', 'This test validates the task entity', 'foo'],
+        ];
+    }
+
+    /**
+     * Test that an error is thrown when wrong type of
+     * arguments are being used to instantiate a new
+     * task entity.
+     *
+     * @covers TaskEntity::__construct
+     * @dataProvider wrongDataProvider
+     * @expectedException \TypeError
+     */
+    public function testTaskEntityThrowsErrorWhenConstructedWithWrongTypeOfArguments(
+        $id,
+        $label,
+        $description,
+        $done
+    )
+    {
+        $task = new TaskEntity($id, $label, $description, $done);
+        $this->fail('Expected exception was not thrown');
+    }
+
+    /**
+     * Bad data provider returns values to feed to the unit test to check
+     * input validation is done correctly
+     *
+     * @return array
+     */
+    public function badDataProvider()
+    {
+        return [
+            ['<script>alert("hacked");</script>', 'This is a test task', 'This test validates the task entity', false],
         ];
     }
 
@@ -87,6 +120,7 @@ class TaskEntityTest extends TestCase
                 $faker->boolean,
             ];
         }
+        return $goodData;
     }
 
     /**
