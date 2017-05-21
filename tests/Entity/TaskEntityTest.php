@@ -5,6 +5,7 @@ namespace App\Test\Entity;
 
 use App\Model\TaskEntity;
 use App\Model\TaskEntityInterface;
+use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 
 class TaskEntityTest extends TestCase
@@ -14,6 +15,12 @@ class TaskEntityTest extends TestCase
      * a new task entity.
      *
      * @covers TaskEntity::__construct
+     * @covers TaskEntity::getId
+     * @covers TaskEntity::getLabel
+     * @covers TaskEntity::getDescription
+     * @covers TaskEntity::isDone
+     * @covers TaskEntity::getCreated
+     * @covers TaskEntity::getModified
      */
     public function testTaskEntityIsEmptyAtConstruction()
     {
@@ -60,5 +67,50 @@ class TaskEntityTest extends TestCase
     {
         $task = new TaskEntity($id, $label, $description, $done);
         $this->fail('Expected exception was not thrown');
+    }
+
+    /**
+     * Good data provider returns values to feed to the unit test to check
+     * input validation is done correctly
+     *
+     * @return array
+     */
+    public function goodDataProvider()
+    {
+        $faker = Factory::create();
+        $goodData = [];
+        for ($i = 0; $i < 10; $i++) {
+            $goodData[] = [
+                $faker->uuid,
+                $faker->text(150),
+                $faker->sentence(),
+                $faker->boolean,
+            ];
+        }
+    }
+
+    /**
+     * Test that valid arguments are correctly processed in the entity
+     *
+     * @covers TaskEntity::__construct
+     * @covers TaskEntity::getId
+     * @covers TaskEntity::getLabel
+     * @covers TaskEntity::getDescription
+     * @covers TaskEntity::isDone
+     * @dataProvider goodDataProvider
+     */
+    public function testTaskEntityAcceptsCorrectArguments(
+        $id,
+        $label,
+        $description,
+        $done
+    )
+    {
+        $task = new TaskEntity($id, $label, $description, $done);
+        $this->assertInstanceOf(TaskEntityInterface::class, $task);
+        $this->assertSame($id, $task->getId());
+        $this->assertSame($label, $task->getLabel());
+        $this->assertSame($description, $task->getDescription());
+        $this->assertSame($done, $task->isDone());
     }
 }
