@@ -1,0 +1,24 @@
+{% extends 'base.twig' %}
+
+{% block title %}Detail for {{ task.label|escape }}{% endblock %}
+
+{% block contents %}
+
+    <dl>
+        <dt>Label</dt>
+        <dd>{{ task.label|escape }}</dd>
+        <dt>Description</dt>
+        <dd>{{ task.description|escape }}</dd>
+        <dt>Done</dt>
+        <dd>{{ task.done ? 'yes' : 'no'}}</dd>
+    </dl>
+
+    <p>
+        <a href="/">&laquo; back to overview</a> |
+        <a href="/change/{{ task.id|escape }}">edit</a>
+        {% if not task.done %}
+        | <a href="/done/{{ task.id|escape }}">mark as done</a>
+        {% endif %}
+    </p>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.twig' %}
+
+{% block title %}Edit task{% endblock %}
+
+{% block contents %}
+
+
+    <form class="form" action="/update" method="post">
+        <input type="hidden" name="id" value="{{ task.id|escape }}">
+        <div class="form-group">
+            <label>Task label:
+                <input class="form-control" type="text" name="label" id="task-label" value="{{ task.label|escape }}">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Task description:
+                <textarea class="form-control" name="description" id="task-description">{{ task.description|escape }}</textarea>
+            </label>
+        </div>
+        <div class="radio">
+            <div class="form-group">
+                <p>Is task done?</p>
+                {% if (task.done) %}
+                    <label>
+                        <input class="form-control" type="radio" name="done" id="done-no" value="0"> No
+                    </label>
+                    <label>
+                        <input class="form-control" type="radio" name="done" id="done-yes" value="1" checked="checked"> Yes
+                    </label>
+                {% else %}
+                    <label>
+                        <input class="form-control" type="radio" name="done" id="done-no" value="0" checked="checked"> No
+                    </label>
+                    <label>
+                        <input class="form-control" type="radio" name="done" id="done-yes" value="1"> Yes
+                    </label>
+                {% endif %}
+            </div>
+        </div>
+        <input class="btn btn-success" type="submit" value="Update task">
+        <a href="/detail/{{ task.id }}">Cancel</a>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.twig' %}
+
+{% block title %}Overview of tasks{% endblock %}
+
+{% block contents %}
+
+
+    <form class="form" action="/add" method="post">
+        <div class="form-group">
+            <label>Task label:
+                <input class="form-control" type="text" name="label" id="task-label" value="">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Task description:
+                <textarea class="form-control" name="description" id="task-description"></textarea>
+            </label>
+        </div>
+        <div class="radio">
+            <div class="form-group">
+                <p>Is task done?</p>
+                <label>
+                    <input class="form-control" type="radio" name="done" id="done-no" value="0"> No
+                </label>
+                <label>
+                    <input class="form-control" type="radio" name="done" id="done-yes" value="1"> Yes
+                </label>
+            </div>
+        </div>
+        <input class="btn btn-success" type="submit" value="Add task">
+    </form>
+
+    <hr>
+
+    <h2>List of tasks</h2>
+    <ul>
+    {% for task in tasks %}
+        <li><a href="/detail/{{ task.id|escape }}">{{ task.label|escape }}</a></li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
