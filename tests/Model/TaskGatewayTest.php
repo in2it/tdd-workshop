@@ -23,7 +23,7 @@ class TaskGatewayTest extends TestCase
     {
         parent::setUp();
         $this->pdoMock = $this->getMockBuilder(\PDO::class)
-            ->setConstructorArgs(['sqlite:memory:'])
+            ->setConstructorArgs(['sqlite::memory:'])
             ->setMethods(['prepare', 'query', 'execute'])
             ->getMock();
 
