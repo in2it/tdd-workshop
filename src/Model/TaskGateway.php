@@ -34,7 +34,7 @@ class TaskGateway implements TaskGatewayInterface
                 $entry['id'],
                 $entry['label'],
                 $entry['description'],
-                $entry['done']
+                (bool) $entry['done']
             ));
         }
         return $store;
@@ -72,7 +72,7 @@ class TaskGateway implements TaskGatewayInterface
             $data['id'],
             $data['label'],
             $data['description'],
-            $data['done']
+            (bool) $data['done']
         );
     }
 
