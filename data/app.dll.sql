@@ -1,0 +1,19 @@
+CREATE TABLE `author` (
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `firstName` TEXT NOT NULL DEFAULT '',
+  `middleName` TEXT NOT NULL DEFAULT '',
+  `lastName` TEXT NOT NULL DEFAULT '',
+  `bio` TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE `book` (
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `title` TEXT NOT NULL DEFAULT '',
+  `summary` TEXT NOT NULL DEFAULT '',
+  `isbn` TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE `book_author` (
+  `book_id` INTEGER NOT NULL,
+  `author_id` INTEGER NOT NULL
+);

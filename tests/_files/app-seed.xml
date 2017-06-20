@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<dataset>
+    <author id="1" firstName="Joe" middleName="" lastName="Doe" bio="Joe Doe" />
+    <author id="2" firstName="Sam" middleName="" lastName="Goris" bio="Laat het gras groeien" />
+    <author id="3" firstName="Darth" middleName="" lastName="Vader" bio="Evil man" />
+    <book id="1" title="One, two, three" summary="We count to 3" isbn="123-1234567890" />
+    <book id="2" title="Gras" summary="Laat het gras maar groeien" isbn="111-1234567890" />
+    <book_author book_id="1" author_id="1"/>
+    <book_author book_id="2" author_id="2"/>
+</dataset>

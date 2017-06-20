@@ -1,0 +1,24 @@
+{% extends 'base.twig' %}
+
+{% block title %}Overview of books{% endblock %}
+
+{% block contents %}
+    <h1>{{ block('title') }}</h1>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Summary</th>
+            <th>Author(s)</th>
+            <th>ISBN</th>
+        </tr>
+        {% for book in books %}
+            <tr valign="top">
+                <td>{{ book.title }}</td>
+                <td>{{ book.summary }}</td>
+                <td>{{ book.firstName }} {{ book.lastName }}</td>
+                <td>{{ book.isbn }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
